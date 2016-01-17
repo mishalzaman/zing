@@ -19,18 +19,20 @@ type Cover struct {
 	Original string `gorethink:"original" json:"original"`
 }
 
+type Files map[string]string
+
 type Content struct {
-	Subheading string            `gorethink:"subheading,omitempty" json:"subheading,omitempty"`
-	Body       string            `gorethink:"content" json:"content,omitempty"`                  // HTML embed or rendered Markdown
-	Raw        string            `gorethink:"raw,omitempty" json:"raw,omitempty"`                // Somewhere to put the Markdown
-	Files      map[string]string `gorethink:"files,omitempty" json:"files,omitempty"`            // Image, audio or video filepath and handles
-	ExtID      string            `gorethink:"external_id,omitempty" json:"externalId,omitempty"` // External ID if it's an embed
-	Provider   string            `gorethink:"provider,omitempty" json:"provider,omitempty"`      // The embed's provider
-	Source     string            `gorethink:"source,omitempty" json:"source,omitempty"`          // Publisher
-	Credit     string            `gorethink:"credit,omitempty" json:"credit,omitempty"`          // Artist or author
-	Desc       string            `gorethink:"desc,omitempty" json:"desc,omitempty"`
-	Kind       string            `gorethink:"kind,omitempty" json:"kind,omitempty"`
-	Created    time.Time         `gorethink:"created,omitempty" json:"created,omitempty"`
+	Subheading string    `gorethink:"subheading,omitempty" json:"subheading,omitempty"`
+	Body       string    `gorethink:"content" json:"content,omitempty"`                  // HTML embed or rendered Markdown
+	Raw        string    `gorethink:"raw,omitempty" json:"raw,omitempty"`                // Somewhere to put the Markdown
+	Files      Files     `gorethink:"files,omitempty" json:"files,omitempty"`            // Image, audio or video filepath and handles
+	ExtID      string    `gorethink:"external_id,omitempty" json:"externalId,omitempty"` // External ID if it's an embed
+	Provider   string    `gorethink:"provider,omitempty" json:"provider,omitempty"`      // The embed's provider
+	Source     string    `gorethink:"source,omitempty" json:"source,omitempty"`          // Publisher
+	Credit     string    `gorethink:"credit,omitempty" json:"credit,omitempty"`          // Artist or author
+	Desc       string    `gorethink:"desc,omitempty" json:"desc,omitempty"`
+	Kind       string    `gorethink:"kind,omitempty" json:"kind,omitempty"`
+	Created    time.Time `gorethink:"created,omitempty" json:"created,omitempty"`
 }
 
 type Edit struct {

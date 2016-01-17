@@ -48,10 +48,10 @@ func (r *AccountRepository) One(id string) (*Account, error) {
 	return account, err
 }
 
-func (r *AccountRepository) Find(accountname string) (*Account, error) {
-	cursor, err := dat.Match(r, "accountname", accountname)
+func (r *AccountRepository) Find(username string) (*Account, error) {
+	cursor, err := dat.Match(r, "username", username)
 	if err != nil {
-		log.Printf("Error retrieving account %s: %s", accountname, err)
+		log.Printf("Error retrieving account %s: %s", username, err)
 	}
 	defer cursor.Close()
 

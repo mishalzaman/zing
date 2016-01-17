@@ -66,12 +66,11 @@ func (c *PostController) Save(res http.ResponseWriter, req *http.Request) {
 		payload = util.Payload{Result: p.ID()}
 		resCode = http.StatusCreated
 	} else {
-		payload = util.Payload{Result: p.ID()}
-		resCode = http.StatusCreated
+		payload = util.Payload{Error: "Could not save post"}
+		resCode = http.StatusInternalServerError
 	}
 
 	util.WriteResponse(res, payload, resCode)
-
 }
 
 func (c *PostController) Update(res http.ResponseWriter, req *http.Request) {

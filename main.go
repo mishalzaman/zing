@@ -5,12 +5,11 @@ import (
 	"log"
 	"net/http"
 
-	"gopkg.in/yaml.v2"
-
 	db "github.com/dancannon/gorethink"
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
 	"github.com/justinas/nosurf"
+	"gopkg.in/yaml.v2"
 
 	"github.com/singnurkar/zing/app/account"
 	"github.com/singnurkar/zing/app/post"

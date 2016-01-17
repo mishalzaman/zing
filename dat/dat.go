@@ -40,6 +40,14 @@ func List(r Repository, nameField string, offset int, limit int) (*db.Cursor, er
 		Run(r.Session())
 }
 
+func Slot(r Repository) (*db.Cursor, error) {
+	return db.Table(r.Table()).
+		Filter(db.Row.Field("slot").Gt(0)).
+		OrderBy(db.Desc("slot")).
+		Pluck("id", "name", "slot").
+		Run(r.Session())
+}
+
 func One(r Repository, id string) (*db.Cursor, error) {
 	return db.Table(r.Table()).
 		Filter(map[string]string{"id": id}).
