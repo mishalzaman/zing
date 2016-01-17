@@ -60,14 +60,12 @@ func (c *TopicController) One(res http.ResponseWriter, req *http.Request) {
 func (c *TopicController) Save(res http.ResponseWriter, req *http.Request) {
 	var payload util.Payload
 	var resCode int
-	var err error
 
 	t := NewTopic()
 	util.DecodeReqBody(req.Body, t)
 
 	v := validate.NewValidator()
-	err = v.NotEmptyString(t.Name)
-	if err != nil {
+	if err := v.NotEmptyString(t.Name); err != nil {
 		payload = util.Payload{Error: err.Error()}
 		resCode = http.StatusBadRequest
 	}
@@ -81,21 +79,40 @@ func (c *TopicController) Save(res http.ResponseWriter, req *http.Request) {
 	}
 
 	util.WriteResponse(res, payload, resCode)
-
 }
 
 func (c *TopicController) Update(res http.ResponseWriter, req *http.Request) {
+	var payload util.Payload
+	var resCode int
+
 	p := &Topic{}
 	util.DecodeReqBody(req.Body, p)
 	p.Modified = time.Now()
+
 	if err := c.Topics.Save(p); err == nil {
-		util.WriteResponse(res, util.Payload{Result: p.ID()}, http.StatusAccepted)
+		payload = util.Payload{Result: p.ID()}
+		resCode = http.StatusAccepted
+	} else {
+		payload = util.Payload{Error: "Could not update Topic"}
+		resCode = http.StatusInternalServerError
 	}
+
+	util.WriteResponse(res, payload, resCode)
 }
 
 func (c *TopicController) Purge(res http.ResponseWriter, req *http.Request) {
+	var payload util.Payload
+	var resCode int
+
 	vars := mux.Vars(req)
 	if err := c.Topics.Purge(vars["id"]); err == nil {
-		util.WriteResponse(res, util.Payload{Success: "Deleted " + vars["id"]}, http.StatusOK)
+		payload = util.Payload{Success: "Deleted " + vars["id"]}
+		resCode = http.StatusOK
+	} else {
+		payload = util.Payload{Error: "Unable to delete Topic"}
+		resCode = http.StatusInternalServerError
 	}
+
+	util.WriteResponse(res, payload, resCode)
+
 }
