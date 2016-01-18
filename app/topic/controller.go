@@ -71,7 +71,7 @@ func (c *TopicController) Save(res http.ResponseWriter, req *http.Request) {
 	if err := c.Topics.Save(t); err != nil {
 		msg := "Could not save Topic"
 		util.LogError(msg, err)
-		util.SendError(res, msg, http.StatusCreated)
+		util.SendError(res, msg, http.StatusInternalServerError)
 		return
 	}
 
