@@ -60,10 +60,6 @@ func Match(r Repository, field string, value interface{}) (*db.Cursor, error) {
 		Run(r.Session())
 }
 
-func Join() {
-
-}
-
 func Create(r Repository, v interface{}) (db.WriteResponse, error) {
 	return db.Table(r.Table()).
 		Insert(v).
@@ -76,6 +72,14 @@ func Update(r Repository, id string, v interface{}) (db.WriteResponse, error) {
 		Update(v).
 		RunWrite(r.Session())
 }
+
+func Assoc(r Repository, v interface{}) (db.WriteResponse, error) {
+	return db.Table(r.Table()).
+		Insert(v).
+		RunWrite(r.Session())
+}
+
+func Unassoc() {}
 
 func Purge(r Repository, id string) (*db.Cursor, error) {
 	return db.Table(r.Table()).

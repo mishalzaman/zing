@@ -8,13 +8,26 @@ import (
 	"github.com/singnurkar/zing/dat"
 )
 
-type PostRepository struct {
+type TopicRepository struct {
 	session *db.Session
 	table   string
 }
 
+func (r *TopicRepository) Session() *db.Session { return r.session }
+func (r *TopicRepository) Table() string        { return r.table }
+
+type PostRepository struct {
+	session *db.Session
+	table   string
+	topics  TopicRepository
+}
+
 func NewRepository(session *db.Session) *PostRepository {
-	return &PostRepository{session: session, table: "post"}
+	return &PostRepository{
+		session: session,
+		table:   "post",
+		topics:  TopicRepository{session, "topic_post"},
+	}
 }
 
 func (r *PostRepository) Session() *db.Session { return r.session }

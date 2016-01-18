@@ -54,7 +54,7 @@ type TopicParent struct {
 	Parent string `gorethink:"parent_id,omitempty" json:"parent"`
 }
 
-func NewTopicParent(childID, parentID string) *TopicParent {
+func NewParent(childID, parentID string) *TopicParent {
 	return &TopicParent{
 		Topic:  childID,
 		Parent: parentID,
@@ -68,7 +68,7 @@ type TopicPost struct {
 	Slot  int64  `gorethink:"slot,omitempty" json:"slot,string"`
 }
 
-func NewTopicPost(topicID, postID string) *TopicPost {
+func NewPost(topicID, postID string) *TopicPost {
 	return &TopicPost{
 		Topic: topicID,
 		Post:  postID,
