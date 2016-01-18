@@ -1,0 +1,48 @@
+{
+  "name": "zing-window",
+  "version": "1.0.0",
+  "description": "Zing CMS Preview",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server --inline --hot --quiet",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/singnurkar/zing.git"
+  },
+  "author": "Akshay Singnurkar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/singnurkar/central/issues"
+  },
+  "homepage": "https://github.com/singnurkar/central",
+  "devDependencies": {
+    "babel-core": "^6.1.21",
+    "babel-loader": "^6.1.0",
+    "babel-plugin-transform-runtime": "^6.1.18",
+    "babel-preset-es2015": "^6.1.18",
+    "babel-runtime": "^6.0.14",
+    "cross-env": "^1.0.5",
+    "css-loader": "^0.21.0",
+    "style-loader": "^0.13.0",
+    "stylus-loader": "^1.4.0",
+    "vue-hot-reload-api": "^1.2.0",
+    "vue-html-loader": "^1.0.0",
+    "vue-loader": "^7.0.3",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.0"
+  },
+  "dependencies": {
+    "es6-promise": "^3.0.2",
+    "events": "^1.1.0",
+    "exports-loader": "^0.6.2",
+    "imports-loader": "^0.6.5",
+    "megamark": "^3.1.0",
+    "vue": "^1.0.8",
+    "vue-resource": "^0.1.17",
+    "vue-router": "^0.7.5",
+    "whatwg-fetch": "^0.10.1",
+    "woofmark": "^4.0.2"
+  }
+}

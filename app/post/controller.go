@@ -38,6 +38,7 @@ func (c *PostController) All(res http.ResponseWriter, req *http.Request) {
 		msg := "Could not retrieve posts"
 		util.LogError(msg, err)
 		util.SendError(res, msg, http.StatusInternalServerError)
+		return
 	}
 
 	util.Send(res, util.Payload{Result: posts}, http.StatusOK)
@@ -105,5 +106,4 @@ func (c *PostController) Purge(res http.ResponseWriter, req *http.Request) {
 	}
 
 	util.Send(res, util.Payload{Success: "Deleted post"}, http.StatusOK)
-
 }
