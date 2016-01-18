@@ -17,7 +17,7 @@ type Post struct {
 	Summary     string         `gorethink:"summary,omitempty" json:"summary,omitempty"`
 	Author      string         `gorethink:"author_id,omitempty" json:"author,omitempty"`
 	Cover       core.Cover     `gorethink:"cover,omitempty" json:"cover,omitempty"`
-	Body        []core.Content `gorethink:"content,omitempty" json:"content"`
+	Content     []core.Content `gorethink:"content,omitempty" json:"content"`
 	TopicIds    string         `gorethink:"topic_ids,omitempty" json:"-"`
 	Topics      []topic.Topic  `gorethink:"-" json:"topics,omitempty"`
 	Upvotes     int64          `gorethink:"-" json:"upvotes,omitempty,string"`

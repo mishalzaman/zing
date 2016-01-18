@@ -17,13 +17,13 @@ type TopicController struct {
 
 func NewController(session *db.Session) *TopicController {
 	repo := NewRepository(session)
-	return &TopicController{Topics: repo}
+	return &TopicController{repo}
 }
 
 func (c *TopicController) List(res http.ResponseWriter, req *http.Request) {
 	list, err := c.Topics.List(0, 1000)
 	if err != nil {
-		msg := "Could not retrieve list of Topics"
+		msg := "Could not retrieve list of topics"
 		util.LogError(msg, err)
 		util.SendError(res, msg, http.StatusInternalServerError)
 		return
@@ -72,7 +72,7 @@ func (c *TopicController) Save(res http.ResponseWriter, req *http.Request) {
 	}
 
 	if err := c.Topics.Save(t); err != nil {
-		msg := "Could not save Topic"
+		msg := "Could not save topic"
 		util.LogError(msg, err)
 		util.SendError(res, msg, http.StatusInternalServerError)
 		return
@@ -87,7 +87,7 @@ func (c *TopicController) Update(res http.ResponseWriter, req *http.Request) {
 	t.Modified = time.Now()
 
 	if err := c.Topics.Update(t); err != nil {
-		msg := "Could not update Topic"
+		msg := "Could not update topic"
 		util.LogError(msg, err)
 		util.SendError(res, msg, http.StatusInternalServerError)
 		return
@@ -99,11 +99,11 @@ func (c *TopicController) Update(res http.ResponseWriter, req *http.Request) {
 func (c *TopicController) Purge(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	if err := c.Topics.Purge(vars["id"]); err != nil {
-		msg := "Unable to delete Topic"
+		msg := "Unable to delete topic"
 		util.LogError(msg, err)
 		util.SendError(res, msg, http.StatusInternalServerError)
 		return
 	}
 
-	util.Send(res, util.Payload{Success: "Deleted Topic"}, http.StatusOK)
+	util.Send(res, util.Payload{Success: "Deleted topic"}, http.StatusOK)
 }
