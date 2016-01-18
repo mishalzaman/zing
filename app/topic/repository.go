@@ -48,7 +48,7 @@ func (r *TopicRepository) Count() (int, error) {
 
 	result, err := dat.Count(r)
 	if err != nil {
-		log.Printf("Error counting Topics", err)
+		log.Printf("Error counting topics", err)
 	}
 
 	result.All(&resultSet)
@@ -60,7 +60,7 @@ func (r *TopicRepository) Count() (int, error) {
 func (r *TopicRepository) List(offset, limit int) (TopicList, error) {
 	rows, err := dat.List(r, "name", offset, limit)
 	if err != nil {
-		log.Printf("Error retrieving list of Topics %d to %d: %s", offset, limit, err)
+		log.Printf("Error retrieving list of topics %d to %d: %s", offset, limit, err)
 	}
 
 	topics := []map[string]string{}
@@ -80,12 +80,12 @@ func (r *TopicRepository) List(offset, limit int) (TopicList, error) {
 func (r *TopicRepository) All(offset, limit int) (Topics, error) {
 	rows, err := dat.All(r, offset, limit)
 	if err != nil {
-		log.Printf("Error retrieving Topics %d to %d: %s", offset, limit, err)
+		log.Printf("Error retrieving topics %d to %d: %s", offset, limit, err)
 	}
 
 	topicsCol := Topics{}
 	if err = rows.All(&topicsCol); err != nil {
-		log.Printf("Error decoding rows into slice of Accounts: %s", err)
+		log.Printf("Error decoding rows into slice of topics: %s", err)
 	}
 	rows.Close()
 
@@ -95,7 +95,7 @@ func (r *TopicRepository) All(offset, limit int) (Topics, error) {
 func (r *TopicRepository) One(id string) (*Topic, error) {
 	cursor, err := dat.One(r, id)
 	if err != nil {
-		log.Printf("Error retrieving Post %s: %s", id, err)
+		log.Printf("Error retrieving topic %s: %s", id, err)
 	}
 	defer cursor.Close()
 
@@ -108,7 +108,7 @@ func (r *TopicRepository) One(id string) (*Topic, error) {
 func (r *TopicRepository) Save(topic *Topic) error {
 	result, err := dat.Create(r, topic)
 	if err != nil {
-		log.Printf("Error creating new Post: %s", err)
+		log.Printf("Error creating new topic: %s", err)
 	}
 	topic.SetID(result.GeneratedKeys[0])
 
@@ -127,7 +127,7 @@ func (r *TopicRepository) Update(topic *Topic) error {
 func (r *TopicRepository) Purge(id string) error {
 	result, err := dat.Purge(r, id)
 	if err != nil {
-		log.Printf("Error removing Post: %s", err)
+		log.Printf("Error removing topic: %s", err)
 	}
 	defer result.Close()
 
