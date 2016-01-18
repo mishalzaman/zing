@@ -57,6 +57,8 @@ func (c *PostController) One(res http.ResponseWriter, req *http.Request) {
 	util.Send(res, util.Payload{Result: post}, http.StatusFound)
 }
 
+func (c *PostController) FindBySlug(res http.ResponseWriter, req *http.Request) {}
+
 func (c *PostController) Save(res http.ResponseWriter, req *http.Request) {
 	p := NewPost()
 	util.DecodeReqBody(req.Body, p)
@@ -107,3 +109,7 @@ func (c *PostController) Purge(res http.ResponseWriter, req *http.Request) {
 
 	util.Send(res, util.Payload{Success: "Deleted post"}, http.StatusOK)
 }
+
+func (c *PostController) GetTopics(res http.ResponseWriter, req *http.Request)    {}
+func (c *PostController) AddTopics(res http.ResponseWriter, req *http.Request)    {}
+func (c *PostController) RemoveTopics(res http.ResponseWriter, req *http.Request) {}

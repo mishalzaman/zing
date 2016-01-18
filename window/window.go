@@ -19,7 +19,7 @@ func NewController(opts *Options) *WindowController {
 }
 
 func (c *WindowController) Render(res http.ResponseWriter, req *http.Request) {
-	t, err := template.ParseFiles("./window/window.html")
+	t, err := template.ParseFiles("./window/index.html")
 	if err != nil {
 		http.Error(res, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return

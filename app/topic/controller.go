@@ -57,6 +57,9 @@ func (c *TopicController) One(res http.ResponseWriter, req *http.Request) {
 	util.Send(res, util.Payload{Result: topic}, http.StatusFound)
 }
 
+func (c *TopicController) FindBySlug(res http.ResponseWriter, req *http.Request) {}
+func (c *TopicController) GetSlots(res http.ResponseWriter, req *http.Request)   {}
+
 func (c *TopicController) Save(res http.ResponseWriter, req *http.Request) {
 	t := NewTopic()
 	util.DecodeReqBody(req.Body, t)
@@ -107,3 +110,9 @@ func (c *TopicController) Purge(res http.ResponseWriter, req *http.Request) {
 
 	util.Send(res, util.Payload{Success: "Deleted topic"}, http.StatusOK)
 }
+
+func (c *TopicController) GetPosts(res http.ResponseWriter, req *http.Request)       {}
+func (c *TopicController) UpdatePostSlot(res http.ResponseWriter, req *http.Request) {}
+func (c *TopicController) GetParents(res http.ResponseWriter, req *http.Request)     {}
+func (c *TopicController) AddParents(res http.ResponseWriter, req *http.Request)     {}
+func (c *TopicController) RemoveParents(res http.ResponseWriter, req *http.Request)  {}
