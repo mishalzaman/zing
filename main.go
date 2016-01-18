@@ -13,6 +13,7 @@ import (
 
 	"github.com/singnurkar/zing/app/account"
 	"github.com/singnurkar/zing/app/post"
+	"github.com/singnurkar/zing/app/topic"
 	"github.com/singnurkar/zing/auth"
 )
 
@@ -71,6 +72,7 @@ func main() {
 	api := router.PathPrefix("/v1").Subrouter()
 	accounts := account.NewController(dbconn)
 	posts := post.NewController(dbconn)
+	topics := topic.NewController(dbconn)
 
 	api.Handle("/accounts", chain.Then(handle(accounts.All))).Methods("GET")
 	api.Handle("/account", chain.Then(handle(accounts.Save))).Methods("POST")
@@ -84,6 +86,13 @@ func main() {
 	api.Handle("/post/{id}", chain.Then(handle(posts.One))).Methods("GET")
 	api.Handle("/post/{id}", chain.Then(handle(posts.Update))).Methods("PUT")
 	api.Handle("/post/{id}", chain.Then(handle(posts.Update))).Methods("DELETE")
+
+	api.Handle("/topics", chain.Then(handle(topics.All))).Methods("GET")
+	api.Handle("/topics/list", chain.Then(handle(topics.List))).Methods("GET")
+	api.Handle("/topic", chain.Then(handle(topics.Save))).Methods("POST")
+	api.Handle("/topic/{id}", chain.Then(handle(topics.One))).Methods("GET")
+	api.Handle("/topic/{id}", chain.Then(handle(topics.Update))).Methods("PUT")
+	api.Handle("/topic/{id}", chain.Then(handle(topics.Update))).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(config.Host, router))
 }
