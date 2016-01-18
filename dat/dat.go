@@ -60,6 +60,10 @@ func Match(r Repository, field string, value interface{}) (*db.Cursor, error) {
 		Run(r.Session())
 }
 
+func Join() {
+
+}
+
 func Create(r Repository, v interface{}) (db.WriteResponse, error) {
 	return db.Table(r.Table()).
 		Insert(v).

@@ -70,6 +70,7 @@ func main() {
 	router.StrictSlash(true)
 
 	api := router.PathPrefix("/v1").Subrouter()
+
 	accounts := account.NewController(dbconn)
 	posts := post.NewController(dbconn)
 	topics := topic.NewController(dbconn)

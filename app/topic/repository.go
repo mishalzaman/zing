@@ -8,13 +8,36 @@ import (
 	"github.com/singnurkar/zing/dat"
 )
 
-type TopicRepository struct {
+type ParentRepository struct {
 	session *db.Session
 	table   string
 }
 
+func (r *ParentRepository) Session() *db.Session { return r.session }
+func (r *ParentRepository) Table() string        { return r.table }
+
+type PostRepository struct {
+	session *db.Session
+	table   string
+}
+
+func (r *PostRepository) Session() *db.Session { return r.session }
+func (r *PostRepository) Table() string        { return r.table }
+
+type TopicRepository struct {
+	session *db.Session
+	table   string
+	parents ParentRepository
+	posts   PostRepository
+}
+
 func NewRepository(session *db.Session) *TopicRepository {
-	return &TopicRepository{session: session, table: "topic"}
+	return &TopicRepository{
+		session: session,
+		table:   "topic",
+		parents: ParentRepository{session, "topic_parent"},
+		posts:   PostRepository{session, "topic_post"},
+	}
 }
 
 func (r *TopicRepository) Session() *db.Session { return r.session }
