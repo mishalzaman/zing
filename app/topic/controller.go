@@ -21,7 +21,8 @@ func NewController(session *db.Session) *TopicController {
 }
 
 func (c *TopicController) List(res http.ResponseWriter, req *http.Request) {
-	if list, err := c.Topics.List(0, 1000); err != nil {
+	list, err := c.Topics.List(0, 1000)
+	if err != nil {
 		msg := "Could not retrieve list of Topics"
 		util.LogError(msg, err)
 		util.SendError(res, msg, http.StatusInternalServerError)
@@ -32,7 +33,8 @@ func (c *TopicController) List(res http.ResponseWriter, req *http.Request) {
 }
 
 func (c *TopicController) All(res http.ResponseWriter, req *http.Request) {
-	if topics, err := c.Topics.All(0, 15); err != nil {
+	topics, err := c.Topics.All(0, 15)
+	if err != nil {
 		msg := "Could not retrieve topics"
 		util.LogError(msg, err)
 		util.SendError(res, msg, http.StatusInternalServerError)
@@ -44,7 +46,8 @@ func (c *TopicController) All(res http.ResponseWriter, req *http.Request) {
 
 func (c *TopicController) One(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
-	if topic, err := c.Topics.One(vars["id"]); err != nil {
+	topic, err := c.Topics.One(vars["id"])
+	if err != nil {
 		msg := "Could not retrieve topic"
 		util.LogError(msg, err)
 		util.SendError(res, msg, http.StatusInternalServerError)
