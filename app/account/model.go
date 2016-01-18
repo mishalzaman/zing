@@ -8,9 +8,15 @@ import (
 
 type Account struct {
 	core.Item
-	Email    string `gorethink:"email,omitempty" json:"email,omitempty"`
-	Username string `gorethink:"username,omitempty" json:"username,omitempty"`
-	Hash     string `gorethink:"password,omitempty" json:"password,omitempty"`
+	Email    string     `gorethink:"email,omitempty" json:"email,omitempty"`
+	Username string     `gorethink:"username,omitempty" json:"username,omitempty"`
+	Hash     string     `gorethink:"password,omitempty" json:"password,omitempty"`
+	Avatar   core.Cover `gorethink:"avatar,omitempty" json:"avatar,omitempty"`
+	Kind     string     `gorethink:"kind,omitempty" json:"kind,omitempty"`
+	Joined   time.Time  `gorethink:"joined,omitempty" json:"joined,omitempty"`
+	Visited  time.Time  `gorethink:"visited,omitempty" json:"visited,omitempty"`
+	Enabled  bool       `gorethink:"enabled,omitempty" json:"-"`
+	Verified bool       `gorethink:"verified,omitempty" json:"verified,omitempty"`
 }
 
 func NewAccount() *Account {
