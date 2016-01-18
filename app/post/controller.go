@@ -21,7 +21,7 @@ func NewController(session *db.Session) *PostController {
 
 func (c *PostController) List(res http.ResponseWriter, req *http.Request) {
 	if list, err := c.Posts.List(0, 1000); err == nil {
-		util.WriteResponse(res, util.Payload{Result: list}, http.StatusOK)
+		util.Send(res, util.Payload{Result: list}, http.StatusOK)
 	}
 }
 
@@ -37,7 +37,7 @@ func (c *PostController) All(res http.ResponseWriter, req *http.Request) {
 		resCode = http.StatusInternalServerError
 	}
 
-	util.WriteResponse(res, payload, resCode)
+	util.Send(res, payload, resCode)
 }
 
 func (c *PostController) One(res http.ResponseWriter, req *http.Request) {
@@ -53,7 +53,7 @@ func (c *PostController) One(res http.ResponseWriter, req *http.Request) {
 		resCode = http.StatusInternalServerError
 	}
 
-	util.WriteResponse(res, payload, resCode)
+	util.Send(res, payload, resCode)
 }
 
 func (c *PostController) Save(res http.ResponseWriter, req *http.Request) {
@@ -70,21 +70,21 @@ func (c *PostController) Save(res http.ResponseWriter, req *http.Request) {
 		resCode = http.StatusInternalServerError
 	}
 
-	util.WriteResponse(res, payload, resCode)
+	util.Send(res, payload, resCode)
 }
 
 func (c *PostController) Update(res http.ResponseWriter, req *http.Request) {
 	p := &Post{}
 	util.DecodeReqBody(req.Body, p)
 	p.Modified = time.Now()
-	if err := c.Posts.Save(p); err == nil {
-		util.WriteResponse(res, util.Payload{Result: p.ID()}, http.StatusAccepted)
+	if err := c.Posts.Update(p); err == nil {
+		util.Send(res, util.Payload{Result: p.ID()}, http.StatusAccepted)
 	}
 }
 
 func (c *PostController) Purge(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	if err := c.Posts.Purge(vars["id"]); err == nil {
-		util.WriteResponse(res, util.Payload{Success: "Deleted " + vars["id"]}, http.StatusOK)
+		util.Send(res, util.Payload{Success: "Deleted " + vars["id"]}, http.StatusOK)
 	}
 }

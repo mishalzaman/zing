@@ -21,98 +21,86 @@ func NewController(session *db.Session) *TopicController {
 }
 
 func (c *TopicController) List(res http.ResponseWriter, req *http.Request) {
-	if list, err := c.Topics.List(0, 1000); err == nil {
-		util.WriteResponse(res, util.Payload{Result: list}, http.StatusOK)
+	if list, err := c.Topics.List(0, 1000); err != nil {
+		msg := "Could not retrieve list of Topics"
+		util.LogError(msg, err)
+		util.SendError(res, msg, http.StatusInternalServerError)
+		return
 	}
+
+	util.Send(res, util.Payload{Result: list}, http.StatusOK)
 }
 
 func (c *TopicController) All(res http.ResponseWriter, req *http.Request) {
-	var payload util.Payload
-	var resCode int
-
-	if topics, err := c.Topics.All(0, 15); err == nil {
-		payload = util.Payload{Result: topics}
-		resCode = http.StatusOK
-	} else {
-		payload = util.Payload{Error: "Could not retrieve topics"}
-		resCode = http.StatusInternalServerError
+	if topics, err := c.Topics.All(0, 15); err != nil {
+		msg := "Could not retrieve topics"
+		util.LogError(msg, err)
+		util.SendError(res, msg, http.StatusInternalServerError)
+		return
 	}
 
-	util.WriteResponse(res, payload, resCode)
+	util.Send(res, util.Payload{Result: topics}, http.StatusOK)
 }
 
 func (c *TopicController) One(res http.ResponseWriter, req *http.Request) {
-	var payload util.Payload
-	var resCode int
-
 	vars := mux.Vars(req)
-	if topic, err := c.Topics.One(vars["id"]); err == nil {
-		payload = util.Payload{Result: topic}
-		resCode = http.StatusFound
-	} else {
-		payload = util.Payload{Error: "Could not retrieve topic"}
-		resCode = http.StatusInternalServerError
+	if topic, err := c.Topics.One(vars["id"]); err != nil {
+		msg := "Could not retrieve topic"
+		util.LogError(msg, err)
+		util.SendError(res, msg, http.StatusInternalServerError)
+		return
 	}
 
-	util.WriteResponse(res, payload, resCode)
+	util.Send(res, util.Payload{Result: topic}, http.StatusFound)
 }
 
 func (c *TopicController) Save(res http.ResponseWriter, req *http.Request) {
-	var payload util.Payload
-	var resCode int
-
 	t := NewTopic()
 	util.DecodeReqBody(req.Body, t)
 
 	v := validate.NewValidator()
-	if err := v.NotEmptyString(t.Name); err != nil {
-		payload = util.Payload{Error: err.Error()}
-		resCode = http.StatusBadRequest
+	v.NotEmptyString(t.Name)
+	v.NoSpaces(t.Name)
+	if v.NotValid() {
+		msg := "Invalid topic name"
+		util.LogError(msg, v)
+		util.SendError(res, msg, http.StatusBadRequest)
+		return
 	}
 
-	if err := c.Topics.Save(t); err == nil {
-		payload = util.Payload{Result: t.ID()}
-		resCode = http.StatusCreated
-	} else {
-		payload = util.Payload{Error: "Could not save Topic"}
-		resCode = http.StatusCreated
+	if err := c.Topics.Save(t); err != nil {
+		msg := "Could not save Topic"
+		util.LogError(msg, err)
+		util.SendError(res, msg, http.StatusCreated)
+		return
 	}
 
-	util.WriteResponse(res, payload, resCode)
+	util.Send(res, util.Payload{Result: t.ID()}, http.StatusCreated)
 }
 
 func (c *TopicController) Update(res http.ResponseWriter, req *http.Request) {
-	var payload util.Payload
-	var resCode int
+	t := &Topic{}
+	util.DecodeReqBody(req.Body, t)
+	t.Modified = time.Now()
 
-	p := &Topic{}
-	util.DecodeReqBody(req.Body, p)
-	p.Modified = time.Now()
-
-	if err := c.Topics.Save(p); err == nil {
-		payload = util.Payload{Result: p.ID()}
-		resCode = http.StatusAccepted
-	} else {
-		payload = util.Payload{Error: "Could not update Topic"}
-		resCode = http.StatusInternalServerError
+	if err := c.Topics.Update(t); err != nil {
+		msg := "Could not update Topic"
+		util.LogError(msg, err)
+		util.SendError(res, msg, http.StatusInternalServerError)
+		return
 	}
 
-	util.WriteResponse(res, payload, resCode)
+	util.Send(res, util.Payload{Result: t.ID()}, http.StatusOK)
 }
 
 func (c *TopicController) Purge(res http.ResponseWriter, req *http.Request) {
-	var payload util.Payload
-	var resCode int
-
 	vars := mux.Vars(req)
-	if err := c.Topics.Purge(vars["id"]); err == nil {
-		payload = util.Payload{Success: "Deleted " + vars["id"]}
-		resCode = http.StatusOK
-	} else {
-		payload = util.Payload{Error: "Unable to delete Topic"}
-		resCode = http.StatusInternalServerError
+	if err := c.Topics.Purge(vars["id"]); err != nil {
+		msg := "Unable to delete Topic"
+		util.LogError(msg, err)
+		util.SendError(res, msg, http.StatusInternalServerError)
+		return
 	}
 
-	util.WriteResponse(res, payload, resCode)
-
+	util.Send(res, util.Payload{Success: "Deleted Topic"}, http.StatusOK)
 }

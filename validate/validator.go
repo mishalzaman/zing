@@ -1,6 +1,9 @@
 package validate
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
 type Validator struct {
 	err error
@@ -15,7 +18,7 @@ func (v *Validator) NotEmptyString(value string) bool {
 		return false
 	}
 
-	if len(value) == 0 {
+	if len(strings.TrimSpace(value)) == 0 {
 		v.err = errors.New("String is empty")
 		return false
 	}
@@ -23,7 +26,20 @@ func (v *Validator) NotEmptyString(value string) bool {
 	return true
 }
 
-func (v *Validator) Valid() bool {
+func (v *Validator) NoSpaces(value string) bool {
+	if v.err != nil {
+		return false
+	}
+
+	if strings.Contains(value, " ") {
+		v.err = errors.New("String has spaces")
+		return false
+	}
+
+	return true
+}
+
+func (v *Validator) NotValid() bool {
 	return v.err != nil
 }
 

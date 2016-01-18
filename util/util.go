@@ -17,7 +17,7 @@ type Payload struct {
 }
 
 // Write JSON Response
-func WriteResponse(res http.ResponseWriter, payload Payload, statusCode int) error {
+func Send(res http.ResponseWriter, payload Payload, statusCode int) error {
 	content, err := json.Marshal(payload)
 	if err == nil {
 		res.WriteHeader(statusCode)
@@ -25,6 +25,14 @@ func WriteResponse(res http.ResponseWriter, payload Payload, statusCode int) err
 		res.Write(content)
 	}
 	return err
+}
+
+func SendError(res http.ResponseWriter, msg string, statusCode int) error {
+	return Send(res, Payload{Error: msg}, statusCode)
+}
+
+func LogError(msg string, err error) {
+	log.Printf("%s: %s", msg, err.Error())
 }
 
 // Decode JSON intro struct
