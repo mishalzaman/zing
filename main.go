@@ -78,21 +78,21 @@ func main() {
 	api.Handle("/account", chain.Then(handle(accounts.Save))).Methods("POST")
 	api.Handle("/account/{id}", chain.Then(handle(accounts.One))).Methods("GET")
 	api.Handle("/account/{id}", chain.Then(handle(accounts.Update))).Methods("PUT")
-	api.Handle("/account/{id}", chain.Then(handle(accounts.Update))).Methods("DELETE")
+	api.Handle("/account/{id}", chain.Then(handle(accounts.Purge))).Methods("DELETE")
 
 	api.Handle("/posts", chain.Then(handle(posts.All))).Methods("GET")
 	api.Handle("/posts/list", chain.Then(handle(posts.List))).Methods("GET")
 	api.Handle("/post", chain.Then(handle(posts.Save))).Methods("POST")
 	api.Handle("/post/{id}", chain.Then(handle(posts.One))).Methods("GET")
 	api.Handle("/post/{id}", chain.Then(handle(posts.Update))).Methods("PUT")
-	api.Handle("/post/{id}", chain.Then(handle(posts.Update))).Methods("DELETE")
+	api.Handle("/post/{id}", chain.Then(handle(posts.Purge))).Methods("DELETE")
 
 	api.Handle("/topics", chain.Then(handle(topics.All))).Methods("GET")
 	api.Handle("/topics/list", chain.Then(handle(topics.List))).Methods("GET")
 	api.Handle("/topic", chain.Then(handle(topics.Save))).Methods("POST")
 	api.Handle("/topic/{id}", chain.Then(handle(topics.One))).Methods("GET")
 	api.Handle("/topic/{id}", chain.Then(handle(topics.Update))).Methods("PUT")
-	api.Handle("/topic/{id}", chain.Then(handle(topics.Update))).Methods("DELETE")
+	api.Handle("/topic/{id}", chain.Then(handle(topics.Purge))).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(config.Host, router))
 }
