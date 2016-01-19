@@ -35,15 +35,18 @@ func (r *PostRepository) Session() *db.Session { return r.session }
 func (r *PostRepository) Table() string        { return r.table }
 
 func (r *PostRepository) Count() (int, error) {
-	resultSet := []int{}
-
 	result, err := dat.Count(r)
 	if err != nil {
 		log.Printf("Error counting posts", err)
+		return 0, err
 	}
+	defer result.Close()
 
-	result.All(&resultSet)
-	result.Close()
+	resultSet := []int{}
+	if err = result.All(&resultSet); err != nil {
+		log.Printf("Error decoding result", err)
+		return 0, err
+	}
 
 	return resultSet[0], err
 }
@@ -108,6 +111,7 @@ func (r *PostRepository) Save(post *core.Post) error {
 	result, err := dat.Create(r, post)
 	if err != nil {
 		log.Printf("Error creating new post: %s", err)
+		return &core.Post{}, err
 	}
 	post.SetID(result.GeneratedKeys[0])
 

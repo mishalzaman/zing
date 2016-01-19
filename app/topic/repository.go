@@ -45,8 +45,6 @@ func (r *TopicRepository) Session() *db.Session { return r.session }
 func (r *TopicRepository) Table() string        { return r.table }
 
 func (r *TopicRepository) Count() (int, error) {
-	resultSet := []int{}
-
 	result, err := dat.Count(r)
 	if err != nil {
 		log.Printf("Error counting topics", err)
@@ -54,6 +52,7 @@ func (r *TopicRepository) Count() (int, error) {
 	}
 	defer result.Close()
 
+	resultSet := []int{}
 	if err = result.All(&resultSet); err != nil {
 		log.Printf("Error decoding result", err)
 		return 0, err
