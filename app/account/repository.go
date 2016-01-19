@@ -82,7 +82,7 @@ func (r *AccountRepository) Update(account *core.Account) error {
 }
 
 func (r *AccountRepository) Purge(id string) error {
-	result, err := dat.Purge(r, id)
+	result, err := dat.Delete(r, id)
 	if err != nil {
 		log.Printf("Error removing account: %s", err)
 	}

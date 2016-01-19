@@ -37,9 +37,9 @@ func (t *Topic) SetID(id string) error {
 	return t.Item.SetID(id)
 }
 
-type TopicList map[string]Topic
+type TopicList map[string]*Topic
 
-type Topics []Topics
+type Topics []*Topics
 
 func (t Topics) Length() int {
 	return len(t)

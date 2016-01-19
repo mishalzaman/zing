@@ -88,7 +88,7 @@ func Assoc(r Repository, v interface{}) (db.WriteResponse, error) {
 
 func Unassoc() {}
 
-func Purge(r Repository, id string) (*db.Cursor, error) {
+func Delete(r Repository, id string) (*db.Cursor, error) {
 	return db.Table(r.Table()).
 		Filter(Query{"id": id}).
 		Delete().

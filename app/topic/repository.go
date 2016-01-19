@@ -138,7 +138,7 @@ func (r *TopicRepository) Update(topic *core.Topic) error {
 }
 
 func (r *TopicRepository) Purge(id string) error {
-	result, err := dat.Purge(r, id)
+	result, err := dat.Delete(r, id)
 	if err != nil {
 		log.Printf("Error removing topic: %s", err)
 	}
@@ -148,7 +148,7 @@ func (r *TopicRepository) Purge(id string) error {
 }
 
 func (r *TopicRepository) Parents(topicId string) (core.TopicList, error) {
-	datas := []struct{ Right core.Topic }{}
+	datas := []struct{ Right *core.Topic }{}
 	query := dat.Query{"topic_id": topicId}
 	field := "post_id"
 	table := "post"

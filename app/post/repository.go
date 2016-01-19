@@ -52,13 +52,15 @@ func (r *PostRepository) List(offset, limit int) (core.FlatList, error) {
 	rows, err := dat.List(r, "title", offset, limit)
 	if err != nil {
 		log.Printf("Error retrieving list of posts %d to %d: %s", offset, limit, err)
+		return core.FlatList{}, err
 	}
+	defer rows.Close()
 
 	posts := []map[string]string{}
 	if err = rows.All(&posts); err != nil {
-		log.Printf("Error decoding rows into slice: %s", err)
+		log.Printf("Error decoding rows into map: %s", err)
+		return core.FlatList{}, err
 	}
-	rows.Close()
 
 	list := core.FlatList{}
 	for _, v := range posts {
@@ -72,13 +74,15 @@ func (r *PostRepository) All(offset, limit int) (core.Posts, error) {
 	rows, err := dat.All(r, offset, limit)
 	if err != nil {
 		log.Printf("Error retrieving posts %d to %d: %s", offset, limit, err)
+		return core.Posts{}, err
 	}
+	defer rows.Close()
 
 	postsCol := core.Posts{}
 	if err = rows.All(&postsCol); err != nil {
 		log.Printf("Error decoding rows into slice of posts: %s", err)
+		return core.Posts{}, err
 	}
-	rows.Close()
 
 	return postsCol, err
 }
@@ -87,11 +91,15 @@ func (r *PostRepository) One(id string) (*core.Post, error) {
 	cursor, err := dat.One(r, id)
 	if err != nil {
 		log.Printf("Error retrieving post %s: %s", id, err)
+		return &core.Post{}, err
 	}
 	defer cursor.Close()
 
 	post := &core.Post{}
-	cursor.One(post)
+	if err = cursor.One(post); err != nil {
+		log.Printf("Error decoding post %s: %s", id, err)
+		return &core.Post{}, err
+	}
 
 	return post, err
 }
@@ -116,7 +124,7 @@ func (r *PostRepository) Update(post *core.Post) error {
 }
 
 func (r *PostRepository) Purge(id string) error {
-	result, err := dat.Purge(r, id)
+	result, err := dat.Delete(r, id)
 	if err != nil {
 		log.Printf("Error removing post: %s", err)
 	}

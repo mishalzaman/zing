@@ -41,9 +41,9 @@ func (p *Post) SetID(id string) error {
 	return p.Item.SetID(id)
 }
 
-type PostList map[string]string
+type PostList map[string]*Post
 
-type Posts []Post
+type Posts []*Post
 
 func (p Posts) Length() int {
 	return len(p)

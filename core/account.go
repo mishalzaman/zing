@@ -31,7 +31,9 @@ func (a *Account) SetID(id string) error {
 	return a.Item.SetID(id)
 }
 
-type Accounts []Account
+type AccountList map[string]*Account
+
+type Accounts []*Account
 
 func (a Accounts) Length() int {
 	return len(a)
