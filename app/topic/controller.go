@@ -133,4 +133,16 @@ func (c *TopicController) AddParents(res http.ResponseWriter, req *http.Request)
 	util.Send(res, util.Payload{Success: "Saved parents"}, http.StatusCreated)
 }
 
-func (c *TopicController) RemoveParents(res http.ResponseWriter, req *http.Request) {}
+func (c *TopicController) RemoveParents(res http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	data := map[string][]string{}
+	util.DecodeReqBody(req.Body, &data)
+	err := c.Topics.RemoveParents(vars["id"], data["parents"])
+	if err != nil {
+		msg := "Error removing topic parents"
+		util.LogError(msg, err)
+		util.SendError(res, msg, http.StatusInternalServerError)
+	}
+
+	util.Send(res, util.Payload{Success: "Removed parents"}, http.StatusOK)
+}

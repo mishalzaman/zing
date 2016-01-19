@@ -111,7 +111,7 @@ func (r *PostRepository) Save(post *core.Post) error {
 	result, err := dat.Create(r, post)
 	if err != nil {
 		log.Printf("Error creating new post: %s", err)
-		return &core.Post{}, err
+		return err
 	}
 	post.SetID(result.GeneratedKeys[0])
 

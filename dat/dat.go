@@ -86,7 +86,12 @@ func Assoc(r Repository, v interface{}) (db.WriteResponse, error) {
 		RunWrite(r.Session())
 }
 
-func Unassoc() {}
+func Unassoc(r Repository, filter Query) (db.WriteResponse, error) {
+	return db.Table(r.Table()).
+		Filter(filter).
+		Delete().
+		RunWrite(r.Session())
+}
 
 func Delete(r Repository, id string) (*db.Cursor, error) {
 	return db.Table(r.Table()).

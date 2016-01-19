@@ -172,9 +172,9 @@ func (r *TopicRepository) Parents(topicId string) (core.TopicList, error) {
 	return parents, err
 }
 
-func (r *TopicRepository) AddParents(topicId string, pending []string) error {
-	parents := make([]*core.TopicParent, len(pending))
-	for i, v := range pending {
+func (r *TopicRepository) AddParents(topicId string, pendingParents []string) error {
+	parents := make([]*core.TopicParent, len(pendingParents))
+	for i, v := range pendingParents {
 		tParent := core.NewTopicParent(topicId, v)
 		parents[i] = tParent
 	}
@@ -185,4 +185,15 @@ func (r *TopicRepository) AddParents(topicId string, pending []string) error {
 	}
 
 	return err
+}
+
+func (r *TopicRepository) RemoveParents(topicId string, unsetParents []string) error {
+	for _, v := range unsetParents {
+		_, err := dat.Unassoc(r, dat.Query{"topic_id": topicId, "parent_id": v})
+		if err != nil {
+			log.Printf("Error removing parent %s from %s", v, topicId)
+			return err
+		}
+	}
+	return nil
 }

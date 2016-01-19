@@ -94,12 +94,10 @@ func main() {
 	api.Handle("/topic/{id}", chain.Then(handle(topics.One))).Methods("GET")
 	api.Handle("/topic/{id}", chain.Then(handle(topics.Update))).Methods("PUT")
 	api.Handle("/topic/{id}", chain.Then(handle(topics.Purge))).Methods("DELETE")
-
-	api.Handle("/topic/{id}/posts", chain.Then(handle(topics.Posts))).Methods("GET")
-
 	api.Handle("/topic/{id}/parents", chain.Then(handle(topics.Parents))).Methods("GET")
 	api.Handle("/topic/{id}/parents", chain.Then(handle(topics.AddParents))).Methods("PUT")
 	api.Handle("/topic/{id}/parents", chain.Then(handle(topics.RemoveParents))).Methods("DELETE")
+	api.Handle("/topic/{id}/posts", chain.Then(handle(topics.Posts))).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(config.Host, router))
 }
