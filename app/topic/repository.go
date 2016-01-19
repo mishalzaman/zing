@@ -197,5 +197,6 @@ func (r *TopicRepository) RemoveParents(topicId string, unsetParents []string) e
 			return err
 		}
 	}
+
 	return nil
 }
