@@ -47,6 +47,7 @@ func (c *PostController) All(res http.ResponseWriter, req *http.Request) {
 
 func (c *PostController) One(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
+
 	post, err := c.Posts.One(vars["id"])
 	if err != nil {
 		msg := "Could not retrieve post"
@@ -101,6 +102,7 @@ func (c *PostController) Update(res http.ResponseWriter, req *http.Request) {
 
 func (c *PostController) Purge(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
+
 	if err := c.Posts.Purge(vars["id"]); err != nil {
 		msg := "Could not purge post"
 		util.LogError(msg, err)

@@ -28,6 +28,7 @@ func (c *AccountController) All(res http.ResponseWriter, req *http.Request) {
 
 func (c *AccountController) One(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
+
 	if account, err := c.Accounts.One(vars["id"]); err == nil {
 		util.Send(res, util.Payload{Result: account}, http.StatusOK)
 	}
@@ -52,6 +53,7 @@ func (c *AccountController) Update(res http.ResponseWriter, req *http.Request) {
 
 func (c *AccountController) Purge(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
+
 	if err := c.Accounts.Purge(vars["id"]); err == nil {
 		util.Send(res, util.Payload{Success: "Deleted " + vars["id"]}, http.StatusOK)
 	}

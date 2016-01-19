@@ -47,6 +47,7 @@ func (c *TopicController) All(res http.ResponseWriter, req *http.Request) {
 
 func (c *TopicController) One(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
+
 	topic, err := c.Topics.One(vars["id"])
 	if err != nil {
 		msg := "Could not retrieve topic"
@@ -102,6 +103,7 @@ func (c *TopicController) Update(res http.ResponseWriter, req *http.Request) {
 
 func (c *TopicController) Purge(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
+
 	if err := c.Topics.Purge(vars["id"]); err != nil {
 		msg := "Unable to delete topic"
 		util.LogError(msg, err)
@@ -121,6 +123,7 @@ func (c *TopicController) Parents(res http.ResponseWriter, req *http.Request) {
 
 func (c *TopicController) AddParents(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
+
 	data := map[string][]string{}
 	util.DecodeReqBody(req.Body, &data)
 	if err := c.Topics.AddParents(vars["id"], data["parentIds"]); err != nil {
@@ -135,6 +138,7 @@ func (c *TopicController) AddParents(res http.ResponseWriter, req *http.Request)
 
 func (c *TopicController) RemoveParents(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
+
 	data := map[string][]string{}
 	util.DecodeReqBody(req.Body, &data)
 	err := c.Topics.RemoveParents(vars["id"], data["parents"])
