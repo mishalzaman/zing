@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"time"
 
-	"bitbucket.com/singnurkar/central/app"
-
 	db "github.com/dancannon/gorethink"
 	"github.com/gorilla/mux"
 
@@ -124,7 +122,7 @@ func (c *TopicController) Parents(res http.ResponseWriter, req *http.Request) {
 func (c *TopicController) AddParents(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	data := map[string][]string{}
-	app.DecodeReqBody(req.Body, &data)
+	util.DecodeReqBody(req.Body, &data)
 	if err := c.Topics.AddParents(vars["id"], data["parentIds"]); err != nil {
 		msg := "Could not define parents"
 		util.LogError(msg, err)

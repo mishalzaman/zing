@@ -76,7 +76,7 @@ func Update(r Repository, id string, v interface{}) (db.WriteResponse, error) {
 func Join(r Repository, v interface{}, filter Query, field string, table string) (*db.Cursor, error) {
 	return db.Table(r.Table()).
 		Filter(filter).
-		EqJoin(field, table).
+		EqJoin(field, db.Table(table)).
 		Run(r.Session())
 }
 

@@ -1,26 +1,24 @@
 package core
 
-import (
-	"time"
-)
+import "time"
 
 type Topic struct {
 	Item
-	Slug        string      `gorethink:"slug,omitempty" json:"slug"`
-	FirstLetter string      `gorethink:"first_letter,omitempty" json:"-"`
-	Slot        int64       `gorethink:"slot,omitempty" json:"slot,string"`
-	Name        string      `gorethink:"name,omitempty" json:"name"`
-	Alt         string      `gorethink:"alt,omitempty" json:"alt"`
-	Abbr        string      `gorethink:"abbr,omitempty" json:"abbr"`
-	Subscribers int64       `gorethink:"subscriptions,omitempty" json:"subscriptions,string"`
-	Intro       string      `gorethink:"intro,omitempty" json:"intro"`
-	Cover       Cover       `gorethink:"cover,omitempty" json:"cover,omitempty"`
-	Parents     Topics      `gorethink:"-" json:"parents,omitempty"`
-	Posts       interface{} `gorethink:"-" json:"parents,omitempty"`
-	Creator     string      `gorethink:"creator_id,omitempty" json:"-"`
-	Visible     bool        `gorethink:"visible,omitempty" json:"visible"`
-	Status      string      `gorethink:"status,omitempty" json:"status,omitempty"`
-	Meta        []Meta      `gorethink:"meta,omitempty" json:"meta"`
+	Slug        string `gorethink:"slug,omitempty" json:"slug"`
+	FirstLetter string `gorethink:"first_letter,omitempty" json:"-"`
+	Slot        int64  `gorethink:"slot,omitempty" json:"slot,string"`
+	Name        string `gorethink:"name,omitempty" json:"name"`
+	Alt         string `gorethink:"alt,omitempty" json:"alt"`
+	Abbr        string `gorethink:"abbr,omitempty" json:"abbr"`
+	Subscribers int64  `gorethink:"subscriptions,omitempty" json:"subscriptions,string"`
+	Intro       string `gorethink:"intro,omitempty" json:"intro"`
+	Cover       Cover  `gorethink:"cover,omitempty" json:"cover,omitempty"`
+	Parents     Topics `gorethink:"-" json:"parents,omitempty"`
+	Posts       Posts  `gorethink:"-" json:"parents,omitempty"`
+	Creator     string `gorethink:"creator_id,omitempty" json:"-"`
+	Visible     bool   `gorethink:"visible,omitempty" json:"visible"`
+	Status      string `gorethink:"status,omitempty" json:"status,omitempty"`
+	Meta        []Meta `gorethink:"meta,omitempty" json:"meta"`
 }
 
 func NewTopic() *Topic {
@@ -39,7 +37,7 @@ func (t *Topic) SetID(id string) error {
 	return t.Item.SetID(id)
 }
 
-type TopicList map[string]string
+type TopicList map[string]Topic
 
 type Topics []Topics
 
@@ -52,6 +50,8 @@ type TopicParent struct {
 	TopicId  string `gorethink:"topic_id,omitempty" json:"topicId"`
 	ParentId string `gorethink:"parent_id,omitempty" json:"parentId"`
 }
+
+type TopicParents []TopicParent
 
 func NewTopicParent(topicId, parentId string) *TopicParent {
 	return &TopicParent{

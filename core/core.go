@@ -11,6 +11,8 @@ var (
 	STATUS_DRAFT   = "DRAFT"
 )
 
+type FlatList map[string]string
+
 type Cover struct {
 	Thumb    string `gorethink:"thumb" json:"thumb"`
 	Small    string `gorethink:"small" json:"small"`

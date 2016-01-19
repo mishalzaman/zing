@@ -50,27 +50,33 @@ func (r *TopicRepository) Count() (int, error) {
 	result, err := dat.Count(r)
 	if err != nil {
 		log.Printf("Error counting topics", err)
+		return 0, err
 	}
+	defer result.Close()
 
-	result.All(&resultSet)
-	result.Close()
+	if err = result.All(&resultSet); err != nil {
+		log.Printf("Error decoding result", err)
+		return 0, err
+	}
 
 	return resultSet[0], err
 }
 
-func (r *TopicRepository) List(offset, limit int) (core.TopicList, error) {
+func (r *TopicRepository) List(offset, limit int) (core.FlatList, error) {
 	rows, err := dat.List(r, "name", offset, limit)
 	if err != nil {
 		log.Printf("Error retrieving list of topics %d to %d: %s", offset, limit, err)
+		return core.FlatList{}, err
 	}
+	defer rows.Close()
 
 	topics := []map[string]string{}
 	if err = rows.All(&topics); err != nil {
 		log.Printf("Error decoding rows into slice: %s", err)
+		return core.FlatList{}, err
 	}
-	rows.Close()
 
-	list := core.TopicList{}
+	list := core.FlatList{}
 	for _, v := range topics {
 		list[v["id"]] = v["title"]
 	}
@@ -82,13 +88,15 @@ func (r *TopicRepository) All(offset, limit int) (core.Topics, error) {
 	rows, err := dat.All(r, offset, limit)
 	if err != nil {
 		log.Printf("Error retrieving topics %d to %d: %s", offset, limit, err)
+		return core.Topics{}, err
 	}
+	defer rows.Close()
 
 	topicsCol := core.Topics{}
 	if err = rows.All(&topicsCol); err != nil {
 		log.Printf("Error decoding rows into slice of topics: %s", err)
+		return core.Topics{}, err
 	}
-	rows.Close()
 
 	return topicsCol, err
 }
@@ -97,11 +105,15 @@ func (r *TopicRepository) One(id string) (*core.Topic, error) {
 	cursor, err := dat.One(r, id)
 	if err != nil {
 		log.Printf("Error retrieving topic %s: %s", id, err)
+		return &core.Topic{}, err
 	}
 	defer cursor.Close()
 
 	topic := &core.Topic{}
-	cursor.One(topic)
+	if err = cursor.One(topic); err != nil {
+		log.Printf("Error decoding row into topic")
+		return &core.Topic{}, err
+	}
 
 	return topic, err
 }
@@ -133,6 +145,32 @@ func (r *TopicRepository) Purge(id string) error {
 	defer result.Close()
 
 	return err
+}
+
+func (r *TopicRepository) Parents(topicId string) (core.TopicList, error) {
+	datas := []struct{ Right core.Topic }{}
+	query := dat.Query{"topic_id": topicId}
+	field := "post_id"
+	table := "post"
+
+	result, err := dat.Join(r.parents, datas, query, field, table)
+	if err != nil {
+		log.Printf("Error retrieving parents of topic %s", topicId)
+		return core.TopicList{}, err
+	}
+	defer result.Close()
+
+	if err = result.All(&datas); err != nil {
+		log.Printf("Could not read data set: %s", err.Error())
+		return core.TopicList{}, err
+	}
+
+	parents := core.TopicList{}
+	for _, v := range datas {
+		parents[v.Right.Id] = v.Right
+	}
+
+	return parents, err
 }
 
 func (r *TopicRepository) AddParents(topicId string, pending []string) error {

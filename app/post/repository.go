@@ -48,7 +48,7 @@ func (r *PostRepository) Count() (int, error) {
 	return resultSet[0], err
 }
 
-func (r *PostRepository) List(offset, limit int) (core.PostList, error) {
+func (r *PostRepository) List(offset, limit int) (core.FlatList, error) {
 	rows, err := dat.List(r, "title", offset, limit)
 	if err != nil {
 		log.Printf("Error retrieving list of posts %d to %d: %s", offset, limit, err)
@@ -60,7 +60,7 @@ func (r *PostRepository) List(offset, limit int) (core.PostList, error) {
 	}
 	rows.Close()
 
-	list := core.PostList{}
+	list := core.FlatList{}
 	for _, v := range posts {
 		list[v["id"]] = v["title"]
 	}
