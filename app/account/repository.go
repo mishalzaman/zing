@@ -5,6 +5,7 @@ import (
 
 	db "github.com/dancannon/gorethink"
 
+	"github.com/singnurkar/zing/core"
 	"github.com/singnurkar/zing/dat"
 )
 
@@ -20,13 +21,13 @@ func NewRepository(session *db.Session) *AccountRepository {
 func (r *AccountRepository) Session() *db.Session { return r.session }
 func (r *AccountRepository) Table() string        { return r.table }
 
-func (r *AccountRepository) All(offset, limit int) (Accounts, error) {
+func (r *AccountRepository) All(offset, limit int) (core.Accounts, error) {
 	rows, err := dat.All(r, offset, limit)
 	if err != nil {
 		log.Printf("Error retrieving Accounts %d to %d: %s", offset, limit, err)
 	}
 
-	accountsCol := Accounts{}
+	accountsCol := core.Accounts{}
 	if err = rows.All(&accountsCol); err != nil {
 		log.Printf("Error decoding rows into slice of accounts: %s", err)
 	}
@@ -35,33 +36,33 @@ func (r *AccountRepository) All(offset, limit int) (Accounts, error) {
 	return accountsCol, err
 }
 
-func (r *AccountRepository) One(id string) (*Account, error) {
+func (r *AccountRepository) One(id string) (*core.Account, error) {
 	cursor, err := dat.One(r, id)
 	if err != nil {
 		log.Printf("Error retrieving account %s: %s", id, err)
 	}
 	defer cursor.Close()
 
-	account := &Account{}
+	account := &core.Account{}
 	cursor.One(account)
 
 	return account, err
 }
 
-func (r *AccountRepository) Find(username string) (*Account, error) {
+func (r *AccountRepository) Find(username string) (*core.Account, error) {
 	cursor, err := dat.Match(r, "username", username)
 	if err != nil {
 		log.Printf("Error retrieving account %s: %s", username, err)
 	}
 	defer cursor.Close()
 
-	account := &Account{}
+	account := &core.Account{}
 	cursor.One(account)
 
 	return account, err
 }
 
-func (r *AccountRepository) Save(account *Account) error {
+func (r *AccountRepository) Save(account *core.Account) error {
 	result, err := dat.Create(r, account)
 	if err != nil {
 		log.Printf("Error creating new account: %s", err)
@@ -71,7 +72,7 @@ func (r *AccountRepository) Save(account *Account) error {
 	return err
 }
 
-func (r *AccountRepository) Update(account *Account) error {
+func (r *AccountRepository) Update(account *core.Account) error {
 	_, err := dat.Update(r, account.ID(), account)
 	if err != nil {
 		log.Printf("Error updating account: %s", err)

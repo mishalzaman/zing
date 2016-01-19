@@ -4,9 +4,12 @@ import (
 	"net/http"
 	"time"
 
+	"bitbucket.com/singnurkar/central/app"
+
 	db "github.com/dancannon/gorethink"
 	"github.com/gorilla/mux"
 
+	"github.com/singnurkar/zing/core"
 	"github.com/singnurkar/zing/util"
 	"github.com/singnurkar/zing/validate"
 )
@@ -61,7 +64,7 @@ func (c *TopicController) FindBySlug(res http.ResponseWriter, req *http.Request)
 func (c *TopicController) GetSlots(res http.ResponseWriter, req *http.Request)   {}
 
 func (c *TopicController) Save(res http.ResponseWriter, req *http.Request) {
-	t := NewTopic()
+	t := core.NewTopic()
 	util.DecodeReqBody(req.Body, t)
 
 	v := validate.NewValidator()
@@ -85,7 +88,7 @@ func (c *TopicController) Save(res http.ResponseWriter, req *http.Request) {
 }
 
 func (c *TopicController) Update(res http.ResponseWriter, req *http.Request) {
-	t := &Topic{}
+	t := &core.Topic{}
 	util.DecodeReqBody(req.Body, t)
 	t.Modified = time.Now()
 
@@ -111,8 +114,25 @@ func (c *TopicController) Purge(res http.ResponseWriter, req *http.Request) {
 	util.Send(res, util.Payload{Success: "Deleted topic"}, http.StatusOK)
 }
 
-func (c *TopicController) GetPosts(res http.ResponseWriter, req *http.Request)       {}
+func (c *TopicController) Posts(res http.ResponseWriter, req *http.Request)          {}
 func (c *TopicController) UpdatePostSlot(res http.ResponseWriter, req *http.Request) {}
-func (c *TopicController) GetParents(res http.ResponseWriter, req *http.Request)     {}
-func (c *TopicController) AddParents(res http.ResponseWriter, req *http.Request)     {}
-func (c *TopicController) RemoveParents(res http.ResponseWriter, req *http.Request)  {}
+
+func (c *TopicController) Parents(res http.ResponseWriter, req *http.Request) {
+
+}
+
+func (c *TopicController) AddParents(res http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	data := map[string][]string{}
+	app.DecodeReqBody(req.Body, &data)
+	if err := c.Topics.AddParents(vars["id"], data["parentIds"]); err != nil {
+		msg := "Could not define parents"
+		util.LogError(msg, err)
+		util.SendError(res, msg, http.StatusInternalServerError)
+		return
+	}
+
+	util.Send(res, util.Payload{Success: "Saved parents"}, http.StatusCreated)
+}
+
+func (c *TopicController) RemoveParents(res http.ResponseWriter, req *http.Request) {}

@@ -5,6 +5,7 @@ import (
 
 	db "github.com/dancannon/gorethink"
 
+	"github.com/singnurkar/zing/core"
 	"github.com/singnurkar/zing/dat"
 )
 
@@ -57,7 +58,7 @@ func (r *TopicRepository) Count() (int, error) {
 	return resultSet[0], err
 }
 
-func (r *TopicRepository) List(offset, limit int) (TopicList, error) {
+func (r *TopicRepository) List(offset, limit int) (core.TopicList, error) {
 	rows, err := dat.List(r, "name", offset, limit)
 	if err != nil {
 		log.Printf("Error retrieving list of topics %d to %d: %s", offset, limit, err)
@@ -69,7 +70,7 @@ func (r *TopicRepository) List(offset, limit int) (TopicList, error) {
 	}
 	rows.Close()
 
-	list := TopicList{}
+	list := core.TopicList{}
 	for _, v := range topics {
 		list[v["id"]] = v["title"]
 	}
@@ -77,13 +78,13 @@ func (r *TopicRepository) List(offset, limit int) (TopicList, error) {
 	return list, err
 }
 
-func (r *TopicRepository) All(offset, limit int) (Topics, error) {
+func (r *TopicRepository) All(offset, limit int) (core.Topics, error) {
 	rows, err := dat.All(r, offset, limit)
 	if err != nil {
 		log.Printf("Error retrieving topics %d to %d: %s", offset, limit, err)
 	}
 
-	topicsCol := Topics{}
+	topicsCol := core.Topics{}
 	if err = rows.All(&topicsCol); err != nil {
 		log.Printf("Error decoding rows into slice of topics: %s", err)
 	}
@@ -92,20 +93,20 @@ func (r *TopicRepository) All(offset, limit int) (Topics, error) {
 	return topicsCol, err
 }
 
-func (r *TopicRepository) One(id string) (*Topic, error) {
+func (r *TopicRepository) One(id string) (*core.Topic, error) {
 	cursor, err := dat.One(r, id)
 	if err != nil {
 		log.Printf("Error retrieving topic %s: %s", id, err)
 	}
 	defer cursor.Close()
 
-	topic := &Topic{}
+	topic := &core.Topic{}
 	cursor.One(topic)
 
 	return topic, err
 }
 
-func (r *TopicRepository) Save(topic *Topic) error {
+func (r *TopicRepository) Save(topic *core.Topic) error {
 	result, err := dat.Create(r, topic)
 	if err != nil {
 		log.Printf("Error creating new topic: %s", err)
@@ -115,7 +116,7 @@ func (r *TopicRepository) Save(topic *Topic) error {
 	return err
 }
 
-func (r *TopicRepository) Update(topic *Topic) error {
+func (r *TopicRepository) Update(topic *core.Topic) error {
 	_, err := dat.Update(r, topic.ID(), topic)
 	if err != nil {
 		log.Printf("Error updating Topic: %s", err)
@@ -134,17 +135,16 @@ func (r *TopicRepository) Purge(id string) error {
 	return err
 }
 
-func (r TopicRepository) AddParents(topicID string, pendingParents []string) error {
-	parents := make([]*TopicParent, len(pendingParents))
-
-	for i, v := range pendingParents {
-		tParent := NewParent(topicID, v)
+func (r *TopicRepository) AddParents(topicId string, pending []string) error {
+	parents := make([]*core.TopicParent, len(pending))
+	for i, v := range pending {
+		tParent := core.NewTopicParent(topicId, v)
 		parents[i] = tParent
 	}
 
 	_, err := dat.Assoc(r.parents, &parents)
 	if err != nil {
-		log.Printf("Error saving parents of topic %s", topicID)
+		log.Printf("Error saving parents of topic %s", topicId)
 	}
 
 	return err

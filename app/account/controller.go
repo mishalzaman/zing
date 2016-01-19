@@ -7,6 +7,7 @@ import (
 	db "github.com/dancannon/gorethink"
 	"github.com/gorilla/mux"
 
+	"github.com/singnurkar/zing/core"
 	"github.com/singnurkar/zing/util"
 )
 
@@ -33,7 +34,7 @@ func (c *AccountController) One(res http.ResponseWriter, req *http.Request) {
 }
 
 func (c *AccountController) Save(res http.ResponseWriter, req *http.Request) {
-	a := NewAccount()
+	a := core.NewAccount()
 	util.DecodeReqBody(req.Body, a)
 	if err := c.Accounts.Save(a); err == nil {
 		util.Send(res, util.Payload{Result: a.ID()}, http.StatusCreated)
@@ -41,7 +42,7 @@ func (c *AccountController) Save(res http.ResponseWriter, req *http.Request) {
 }
 
 func (c *AccountController) Update(res http.ResponseWriter, req *http.Request) {
-	a := &Account{}
+	a := &core.Account{}
 	util.DecodeReqBody(req.Body, a)
 	a.Modified = time.Now()
 	if err := c.Accounts.Update(a); err == nil {

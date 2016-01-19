@@ -5,6 +5,7 @@ import (
 
 	db "github.com/dancannon/gorethink"
 
+	"github.com/singnurkar/zing/core"
 	"github.com/singnurkar/zing/dat"
 )
 
@@ -47,7 +48,7 @@ func (r *PostRepository) Count() (int, error) {
 	return resultSet[0], err
 }
 
-func (r *PostRepository) List(offset, limit int) (PostList, error) {
+func (r *PostRepository) List(offset, limit int) (core.PostList, error) {
 	rows, err := dat.List(r, "title", offset, limit)
 	if err != nil {
 		log.Printf("Error retrieving list of posts %d to %d: %s", offset, limit, err)
@@ -59,7 +60,7 @@ func (r *PostRepository) List(offset, limit int) (PostList, error) {
 	}
 	rows.Close()
 
-	list := PostList{}
+	list := core.PostList{}
 	for _, v := range posts {
 		list[v["id"]] = v["title"]
 	}
@@ -67,13 +68,13 @@ func (r *PostRepository) List(offset, limit int) (PostList, error) {
 	return list, err
 }
 
-func (r *PostRepository) All(offset, limit int) (Posts, error) {
+func (r *PostRepository) All(offset, limit int) (core.Posts, error) {
 	rows, err := dat.All(r, offset, limit)
 	if err != nil {
 		log.Printf("Error retrieving posts %d to %d: %s", offset, limit, err)
 	}
 
-	postsCol := Posts{}
+	postsCol := core.Posts{}
 	if err = rows.All(&postsCol); err != nil {
 		log.Printf("Error decoding rows into slice of posts: %s", err)
 	}
@@ -82,20 +83,20 @@ func (r *PostRepository) All(offset, limit int) (Posts, error) {
 	return postsCol, err
 }
 
-func (r *PostRepository) One(id string) (*Post, error) {
+func (r *PostRepository) One(id string) (*core.Post, error) {
 	cursor, err := dat.One(r, id)
 	if err != nil {
 		log.Printf("Error retrieving post %s: %s", id, err)
 	}
 	defer cursor.Close()
 
-	post := &Post{}
+	post := &core.Post{}
 	cursor.One(post)
 
 	return post, err
 }
 
-func (r *PostRepository) Save(post *Post) error {
+func (r *PostRepository) Save(post *core.Post) error {
 	result, err := dat.Create(r, post)
 	if err != nil {
 		log.Printf("Error creating new post: %s", err)
@@ -105,7 +106,7 @@ func (r *PostRepository) Save(post *Post) error {
 	return err
 }
 
-func (r *PostRepository) Update(post *Post) error {
+func (r *PostRepository) Update(post *core.Post) error {
 	_, err := dat.Update(r, post.ID(), post)
 	if err != nil {
 		log.Printf("Error updating post: %s", err)

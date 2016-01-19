@@ -7,6 +7,7 @@ import (
 	db "github.com/dancannon/gorethink"
 	"github.com/gorilla/mux"
 
+	"github.com/singnurkar/zing/core"
 	"github.com/singnurkar/zing/util"
 	"github.com/singnurkar/zing/validate"
 )
@@ -60,7 +61,7 @@ func (c *PostController) One(res http.ResponseWriter, req *http.Request) {
 func (c *PostController) FindBySlug(res http.ResponseWriter, req *http.Request) {}
 
 func (c *PostController) Save(res http.ResponseWriter, req *http.Request) {
-	p := NewPost()
+	p := core.NewPost()
 	util.DecodeReqBody(req.Body, p)
 
 	v := validate.NewValidator()
@@ -84,7 +85,7 @@ func (c *PostController) Save(res http.ResponseWriter, req *http.Request) {
 }
 
 func (c *PostController) Update(res http.ResponseWriter, req *http.Request) {
-	p := &Post{}
+	p := &core.Post{}
 	util.DecodeReqBody(req.Body, p)
 	p.Modified = time.Now()
 
