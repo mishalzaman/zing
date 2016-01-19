@@ -121,10 +121,12 @@ func (r *TopicRepository) Save(topic *core.Topic) error {
 	result, err := dat.Create(r, topic)
 	if err != nil {
 		log.Printf("Error creating new topic: %s", err)
+		return err
 	}
+
 	topic.SetID(result.GeneratedKeys[0])
 
-	return err
+	return nil
 }
 
 func (r *TopicRepository) Update(topic *core.Topic) error {

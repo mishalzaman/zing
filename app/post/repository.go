@@ -112,10 +112,12 @@ func (r *PostRepository) Save(post *core.Post) error {
 	if err != nil {
 		log.Printf("Error creating new post: %s", err)
 		return err
+
 	}
+
 	post.SetID(result.GeneratedKeys[0])
 
-	return err
+	return nil
 }
 
 func (r *PostRepository) Update(post *core.Post) error {
