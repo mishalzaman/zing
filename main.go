@@ -15,6 +15,7 @@ import (
 	"github.com/singnurkar/zing/app/post"
 	"github.com/singnurkar/zing/app/topic"
 	"github.com/singnurkar/zing/auth"
+	"github.com/singnurkar/zing/window"
 )
 
 type DatabaseConfig struct {
@@ -25,6 +26,8 @@ type DatabaseConfig struct {
 }
 
 type Config struct {
+	Dev      bool            `yaml:"dev"`
+	Title    string          `yaml:"title"`
 	Host     string          `yaml:"host"`
 	Prefix   string          `yaml:"prefix"`
 	Database *DatabaseConfig `yaml:"database"`
@@ -68,6 +71,13 @@ func main() {
 
 	router := mux.NewRouter()
 	router.StrictSlash(true)
+
+	w := window.NewController(&window.Options{
+		Title: config.Title,
+		Dev:   config.Dev,
+	})
+	router.Handle("/", handle(w.Render))
+	router.Handle("/assets", http.FileServer(http.Dir("./window/dist/")))
 
 	api := router.PathPrefix("/v1").Subrouter()
 

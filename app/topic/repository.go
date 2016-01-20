@@ -132,7 +132,7 @@ func (r *TopicRepository) Save(topic *core.Topic) error {
 func (r *TopicRepository) Update(topic *core.Topic) error {
 	_, err := dat.Update(r, topic.ID(), topic)
 	if err != nil {
-		log.Printf("Error updating Topic: %s", err)
+		log.Printf("Error updating topic: %s", err)
 	}
 
 	return err
