@@ -40,7 +40,7 @@ store.fetchPost = id => {
         } 
 
         fetch(
-            postsApi + id
+            '/v1/post/' + id
         ).then(
             response => response.json()
         ).then(json => {
@@ -74,7 +74,7 @@ store.fetchPostsByPage = page => {
 
 store.savePost = post => {
     return new Promise((resolve, reject) => {
-        fetch(postsApi, {
+        fetch('/v1/post/', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
@@ -96,7 +96,7 @@ store.savePost = post => {
 
 store.updatePost = post => {
     return new Promise((resolve, reject) => {
-        fetch(postsApi + post.id, {
+        fetch('/v1/post/' + post.id, {
             method: 'put',
             headers: {
                 'Accept': 'application/json',
@@ -117,7 +117,7 @@ store.updatePost = post => {
 
 store.deletePost = post => {
     return new Promise((resolve, reject) => {
-        fetch(postsApi + post.id, {
+        fetch('/v1/post/' + post.id, {
             method: 'delete'
         }).then(result => {
             return result.json()
