@@ -14,6 +14,7 @@ import (
 	"github.com/singnurkar/zing/app/account"
 	"github.com/singnurkar/zing/app/post"
 	"github.com/singnurkar/zing/app/topic"
+	"github.com/singnurkar/zing/auth"
 	"github.com/singnurkar/zing/window"
 )
 
@@ -63,8 +64,8 @@ func init() {
 
 func main() {
 	dbconn := connect(config.Database)
-	// basicauth := auth.NewBasic(dbconn)
-	chain := alice.New(nosurf.NewPure)
+	basicauth := auth.NewBasic(dbconn)
+	chain := alice.New(basicauth.Basic, nosurf.NewPure)
 	router := mux.NewRouter()
 	router.StrictSlash(true)
 
@@ -92,7 +93,7 @@ func main() {
 	router.Handle(routes["root"], chain.Then(handle(w.Render))).Methods("GET")
 
 	fs := http.FileServer(http.Dir("window/dist/"))
-	router.PathPrefix(routes["assets"]).Handler(http.StripPrefix("/assets/", fs))
+	router.PathPrefix(routes["assets"]).Handler(basicauth.Basic(http.StripPrefix("/assets/", fs)))
 
 	api := router.PathPrefix("/v1").Subrouter()
 	accounts := account.NewController(dbconn)

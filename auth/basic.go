@@ -2,6 +2,7 @@ package auth
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strings"
@@ -21,26 +22,26 @@ func NewBasic(session *db.Session) *Basic {
 func (a *Basic) Basic(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		if len(req.Header["Authorization"]) == 0 {
-			reject(res)
+			reject(res, "No credentials given")
 			return
 		}
 
 		passport := strings.TrimSpace(req.Header["Authorization"][0])
 		if !strings.HasPrefix(passport, "Basic") {
-			reject(res)
+			reject(res, "Unrecognized auth scheme")
 			return
 		}
 
 		credentials := strings.Split(passport, " ")
 		fingerprint, err := base64.StdEncoding.DecodeString(credentials[1])
 		if err != nil {
-			reject(res)
+			reject(res, err.Error())
 			return
 		}
 
 		client, err := a.identify(strings.Split(string(fingerprint), ":"))
 		if err != nil {
-			reject(res)
+			reject(res, err.Error())
 			return
 		}
 
@@ -58,7 +59,13 @@ func (a *Basic) identify(identity []string) (*Client, error) {
 	return &Client{}, errors.New("Cannot identify client")
 }
 
-func reject(res http.ResponseWriter) {
-	res.Header().Set("WWW-Authenticate", "Basic realm=Restricted")
-	http.Error(res, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+func reject(res http.ResponseWriter, msg string) {
+	// http.Error(res, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+	content, err := json.Marshal(map[string]string{"error": msg})
+	if err == nil {
+		res.WriteHeader(http.StatusUnauthorized)
+		res.Header().Set("WWW-Authenticate", "Basic realm=Restricted")
+		res.Header().Set("Content-Type", "application/json")
+		res.Write(content)
+	}
 }
